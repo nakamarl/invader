@@ -3,12 +3,12 @@ phina.globalize();
 // 何かで使う定数値(バランス調整でいじっていい値)
 const PLAYER_POSITION_Y = 550;  //自機の縦位置
 const PLAYER_DEFAULT_SPEED = 2; //自機の移動スピード
-const BULLET_DEFAULT_SPEED = 50; //自機が発射する弾のスピード
+const BULLET_DEFAULT_SPEED = 5; //自機が発射する弾のスピード
 var score = parseInt(document.getElementById('score').innerHTML);
 const ENEMY_X_LENGTH = 8;
 const ENEMY_Y_LENGTH = 5;
 var ENEMY_MOVE_X = 8;
-var ENEMY_ALL_LENGTH = 0;
+//var ENEMY_ALL_LENGTH = 0;//使おうとしてつかわなかったやつ
 // MainScene クラスを定義
 phina.define('MainScene', {
     superClass: 'DisplayScene',
@@ -27,6 +27,7 @@ phina.define('MainScene', {
         }).addChildTo(this);
 
         // 敵のグループ作成
+
         const enemies = EnemyGroup({
             x: 35,
             y: 35,
@@ -36,6 +37,10 @@ phina.define('MainScene', {
             lengthY: ENEMY_Y_LENGTH,
             player: this.player
         }).addChildTo(this);
+
+        /*if(score != 0 && score % 40 === 0){
+            console.log('unko');
+        }*/
     }
 });
 
@@ -101,8 +106,8 @@ phina.define('Bullet', {
     superClass: 'Shape',
     init: function (option) {
         this.superInit({
-            width: 800,
-            height: 600,
+            width: 2,
+            height: 10,
             padding: 0,
             backgroundColor: '#ddd',
             x: option.x,
@@ -163,6 +168,7 @@ phina.define('EnemyGroup', {
     update: function (app) {
         // 当たり判定
         const thisGroup = this;
+
         if (this.player.bullet != null) {
             // 弾のコピーを作ってから座標を変換する。
             let bullet = Bullet(this.player.bullet);
@@ -190,13 +196,14 @@ phina.define('EnemyGroup', {
     move: function () {
         this.x += ENEMY_MOVE_X;
         if (this.left < 10 || 230 < this.right) {
-            this.bottom += 10;
-
+            this.bottom += 20;
             ENEMY_MOVE_X *= -1;
         }
+        /*if(this.bottom >= PLAYER_POSITION_Y) {
+            this.gameover();
 
+        }*/
     }
-
 
 });
 
@@ -235,7 +242,7 @@ phina.main(function () {
         width: 800,
         height: 600,
         fps: 60,
-        fit: false,
+        fit: false
     });
 
     // app.enableStats();
